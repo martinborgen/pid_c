@@ -40,8 +40,8 @@ void test_w_dummy_load() {
     pid_cont_t test =  {
         1,
         2,
+        1,
         0,
-        3,
         0,
         0,
         0,

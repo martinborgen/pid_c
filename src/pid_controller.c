@@ -24,8 +24,8 @@ int32_t update_pid(pid_cont_t* cont, int32_t ref, int32_t feedback, uint32_t mil
 
     int32_t p_term = cont->kp * error;
     int32_t i_term = cont->ki * (*cont->integrating_method)(error, cont->error_old, millisec, cont->time_old) / 1000; // Because of millisec vs sec
-    int32_t d_term = cont->kd * error / millisec_delta; // TODO Check for zero division
-
+    int32_t d_term = cont->kd * (error - cont->error_old) / millisec_delta;
+    
     if (cont->kp > INT32_MAX / error) {
         p_term = INT32_MAX;
     }
