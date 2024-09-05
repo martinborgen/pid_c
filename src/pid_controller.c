@@ -18,15 +18,45 @@ int32_t update_pid(pid_cont_t* cont, int32_t ref, int32_t feedback, uint32_t mil
     int32_t error = ref - feedback;
     int32_t output = 0;
 
+    if (millisec_delta == 0 || error == 0) {
+        return cont->iterm;
+    }
+
     int32_t p_term = cont->kp * error;
-    int32_t i_term = cont->ki * euler_forward(cont->u_old, millisec, cont->time_old);
+    int32_t i_term = cont->ki * euler_forward(cont->error_old, millisec, cont->time_old) / 1000; // Because of millisec vs sec
     int32_t d_term = cont->kd * error / millisec_delta; // TODO Check for zero division
 
-    output += cont->iterm;
-    output += d_term;
+    if (cont->kp > INT32_MAX / error) {
+        p_term = INT32_MAX;
+    }
+    if (cont->ki > INT32_MAX / error) {
+        i_term = INT32_MAX;
+    }
+    if (cont->kd > INT32_MAX / error) {
+        d_term = INT32_MAX;
+    }
 
-    cont->iterm += i_term; // TODO Handle overflow here too
+    if ((p_term > 0 && p_term < INT32_MAX - output) || 
+        (p_term < 0 && p_term > INT32_MIN + output)) {
+        output += p_term;
+    } 
+
+    if ((i_term > 0 && i_term < INT32_MAX - output) || 
+        (i_term < 0 && i_term > INT32_MIN + output)) {
+        output += i_term;
+    } 
+
+    if ((d_term > 0 && d_term < INT32_MAX - output) || 
+        (d_term < 0 && d_term > INT32_MIN + output)) {
+        output += d_term;
+    } 
+
+    if ((i_term > 0 && i_term < INT32_MAX - cont->iterm) || 
+        (i_term < 0 && i_term > INT32_MIN + cont->iterm)) {
+        cont->iterm += i_term;
+    }
+    
     cont->time_old = millisec;
-    cont->u_old = output;
+    cont->error_old = error;
     return output;
 }

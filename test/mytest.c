@@ -52,7 +52,8 @@ void test_w_dummy_load() {
     float ref = 1;
     for (int i = 0; i < 200; i++) {
         int u = update_pid(&test, ref * scale_factor, w * scale_factor, i + 1);
-        w = dummy_load((float) u / scale_factor, w);
+        float u_scaled = u / scale_factor;
+        w = dummy_load(u_scaled, w);
         res[i] = w;
         printf("%f\n", w);
     }
