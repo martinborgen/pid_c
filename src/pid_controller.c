@@ -60,3 +60,23 @@ int32_t update_pid(pid_cont_t* cont, int32_t ref, int32_t feedback, uint32_t mil
     cont->error_old = error;
     return output;
 }
+
+pid_cont_t make_pid_from_params(
+        int32_t kp, 
+        int32_t ki, 
+        int32_t kd, 
+        int32_t tf, 
+        int32_t(*integrating_method)(int32_t, int32_t, uint32_t, uint32_t)) {
+    
+    pid_cont_t output = {
+        kp,
+        ki,
+        kd,
+        tf,
+        0,
+        0,
+        0,
+        integrating_method,
+    };
+    return output;
+}

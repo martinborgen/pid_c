@@ -37,16 +37,19 @@ float dummy_load(float volt, float ang_vel) {
 }
 
 void test_w_dummy_load() {
-    pid_cont_t test =  {
-        1,
-        2,
-        1,
-        0,
-        0,
-        0,
-        0,
-        &euler_forward,
-    };
+    // pid_cont_t test0 =  {
+    //     1,
+    //     2,
+    //     1,
+    //     0,
+    //     0,
+    //     0,
+    //     0,
+    //     &euler_forward,
+    // };
+
+    pid_cont_t test = make_pid_from_params(1, 2, 1, 0, &euler_forward);
+
     float w = 0;
     float res[200];
     float scale_factor = 100000;
