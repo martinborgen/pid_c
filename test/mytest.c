@@ -45,6 +45,7 @@ void test_w_dummy_load() {
         0,
         0,
         0,
+        &euler_forward,
     };
     float w = 0;
     float res[200];
