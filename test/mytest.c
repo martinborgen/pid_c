@@ -22,7 +22,7 @@ float dummy_load(float volt, float ang_vel) {
 
     w     0.026009141693124
     - = -----------------------
-    U  1 - 0.997503122397460
+    U    1 - 0.997503122397460
 
     where w is angular vel, U is voltage
     Transfer function from voltage to angular vel 
@@ -45,10 +45,10 @@ void test_w_dummy_load() {
     };
     float w = 0;
     float res[200];
-    float scale_factor = 1000000;
-    float ref = 100;
+    float scale_factor = 100000;
+    float ref = 1;
     for (int i = 0; i < 200; i++) {
-        int u = update_pid(&test, ref * scale_factor, w * scale_factor, 1);
+        int u = update_pid(&test, ref * scale_factor, w * scale_factor, i + 1);
         w = dummy_load((float) u / scale_factor, w);
         res[i] = w;
         printf("%f\n", w);

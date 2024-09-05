@@ -9,7 +9,7 @@ typedef struct pid_controller {
     int32_t kd;
     int32_t wc;
     int32_t iterm;
-    uint32_t old_t;
+    uint32_t time_old;
 } pid_cont_t;
 
 int32_t update_pid(pid_cont_t* cont, int32_t ref, int32_t feedback, uint32_t millisec);
