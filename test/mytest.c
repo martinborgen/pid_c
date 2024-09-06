@@ -2,6 +2,9 @@
 // #include "acutest.h"
 #include "pid_controller.h"
 
+// Currently, unittesting seems unfeasable for the controllers.
+// ATM, the author is cross checking versus matlab for controller behaviour
+
 void basic_test() {
     // pid_cont_t test = {
     //     1,
