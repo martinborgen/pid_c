@@ -15,7 +15,7 @@ typedef struct pid_controller {
     int32_t ki;
     int32_t kd;
     int32_t tf;
-    int32_t iterm;
+    int32_t i_term;
     uint32_t time_old;
     int32_t error_old;
     int32_t (*integrating_method)(int32_t, int32_t, uint32_t, uint32_t);
