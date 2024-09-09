@@ -22,7 +22,7 @@ int32_t update_pid(pid_cont_t* cont,
     int32_t output = 0;
 
     if (millisec_delta == 0 || error == 0) {
-        return cont->iterm;
+        return cont->i_term;
     }
 
     int32_t p_term = cont->kp * error;
@@ -45,21 +45,42 @@ int32_t update_pid(pid_cont_t* cont,
     if ((p_term > 0 && p_term < INT32_MAX - output) ||
         (p_term < 0 && p_term > INT32_MIN + output)) {
         output += p_term;
-    }
-
-    if ((i_term > 0 && i_term < INT32_MAX - output) ||
-        (i_term < 0 && i_term > INT32_MIN + output)) {
-        output += i_term;
+    } else if (p_term > 0) {
+        output = INT32_MAX;
+    } else {
+        output = INT32_MIN;
     }
 
     if ((d_term > 0 && d_term < INT32_MAX - output) ||
         (d_term < 0 && d_term > INT32_MIN + output)) {
         output += d_term;
+    } else if (d_term > 0) {
+        output = INT32_MAX;
+    } else {
+        output = INT32_MIN;
     }
 
-    if ((i_term > 0 && i_term < INT32_MAX - cont->iterm) ||
-        (i_term < 0 && i_term > INT32_MIN + cont->iterm)) {
-        cont->iterm += i_term;
+    // This return handles integrator windup
+    if (output == INT32_MAX || output == INT32_MIN) {
+        return output;
+    }
+
+    if ((i_term > 0 && i_term < INT32_MAX - cont->i_term) ||
+        (i_term < 0 && i_term > INT32_MIN + cont->i_term)) {
+        cont->i_term += i_term;
+    } else if (i_term > 0) {
+        cont->i_term = INT32_MAX;
+    } else {
+        cont->i_term = INT32_MIN;
+    }
+
+    if ((cont->i_term > 0 && i_term < INT32_MAX - output) ||
+        (cont->i_term < 0 && i_term > INT32_MIN + output)) {
+        output += i_term;
+    } else if (cont->i_term > 0) {
+        return INT32_MAX;
+    } else {
+        return INT32_MIN;
     }
 
     cont->time_old = millisec;
